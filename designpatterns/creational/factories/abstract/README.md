@@ -31,7 +31,16 @@ The Abstract Factory design pattern solves problems like:
 ## How to call it
 
 * I added within the `motorcycles_test.go` file the logic about how clients of the package should use it.
+* Or using the version that has generics in `factories` package
 
 ## Comments.
 
-* I don't like that factories have to know about the categories behavior explicitly.
+* I don't like that factories have to know about the categories behavior explicitly (When you don't have genercis).
+
+
+
+## Sources
+
+* Interesting [post](https://stackoverflow.com/questions/72034479/how-to-implement-generic-interfaces) about generics
+
+

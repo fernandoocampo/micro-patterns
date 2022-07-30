@@ -11,7 +11,19 @@ import (
 type Factory struct {
 }
 
-// NewFactory create a ducati factory
+type UrbanFactory[T any] struct {
+	MotorcycleType T
+}
+
+type SportFactory[T any] struct {
+	MotorcycleType T
+}
+
+type AdventureFactory[T any] struct {
+	MotorcycleType T
+}
+
+// NewFactory create a bmw factory
 func NewFactory() *Factory {
 	newFactory := Factory{}
 	return &newFactory
@@ -20,9 +32,21 @@ func NewFactory() *Factory {
 func (f *Factory) CreateUrban() motorcycles.UrbanBehavior {
 	return urbans.New()
 }
+func (f *UrbanFactory[T]) CreateUrban() T {
+	var bike interface{} = urbans.New()
+	return bike.(T)
+}
 func (f *Factory) CreateSport() motorcycles.SportBehavior {
 	return sports.New()
 }
+func (f *SportFactory[T]) CreateSport() T {
+	var bike interface{} = sports.New()
+	return bike.(T)
+}
 func (f *Factory) CreateAdventure() motorcycles.AdventureBehavior {
 	return adventures.New()
+}
+func (f *AdventureFactory[T]) CreateAdventure() T {
+	var bike interface{} = adventures.New()
+	return bike.(T)
 }
