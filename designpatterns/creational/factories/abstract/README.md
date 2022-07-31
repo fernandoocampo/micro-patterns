@@ -26,7 +26,6 @@ The Abstract Factory design pattern solves problems like:
 * `motorcycles` will define the common behavior for motorcyle types.
 * I decided to create the factory packages inside `motorcycles`, so you will see the `bmw` and `ducati` packages there.
 * Each factory define the internal logic for their motorcycles.
-* If 
 
 ## How to call it
 
