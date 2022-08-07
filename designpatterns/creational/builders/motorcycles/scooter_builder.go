@@ -10,15 +10,17 @@ type EngineSpecification struct {
 }
 
 func NewScooterBuilder() *scooterBuilder {
-	newScooterBuilder := scooterBuilder{}
-	return &newScooterBuilder
+	newScooterBuilder := new(scooterBuilder)
+	newScooterBuilder.scooter = new(Scooter)
+
+	return newScooterBuilder
 }
 
-func (s *scooterBuilder) New(serie string) *scooterBuilder {
-	newScooter := Scooter{
-		Serie: serie,
-	}
-	s.scooter = &newScooter
+func (s *scooterBuilder) WithSerie(serie string) *scooterBuilder {
+	newScooter := new(Scooter)
+	newScooter.Serie = serie
+	s.scooter = newScooter
+
 	return s
 }
 func (s *scooterBuilder) WithEngine(engineSpecification EngineSpecification) *scooterBuilder {
@@ -27,6 +29,7 @@ func (s *scooterBuilder) WithEngine(engineSpecification EngineSpecification) *sc
 		HP: engineSpecification.HorsePower,
 	}
 	s.scooter.Engine = &newEngine
+
 	return s
 }
 func (s *scooterBuilder) WithFairing(fairingID string) *scooterBuilder {
@@ -36,6 +39,7 @@ func (s *scooterBuilder) WithFairing(fairingID string) *scooterBuilder {
 		Model:   fairingID + "-abc-2022",
 	}
 	s.scooter.Fairing = &newFairing
+
 	return s
 }
 func (s *scooterBuilder) WithCentralComputer(centralComputerID string) *scooterBuilder {
@@ -44,6 +48,7 @@ func (s *scooterBuilder) WithCentralComputer(centralComputerID string) *scooterB
 		Model:   "abc",
 	}
 	s.scooter.CentralComputer = &newCC
+
 	return s
 }
 func (s *scooterBuilder) Build() *Scooter {

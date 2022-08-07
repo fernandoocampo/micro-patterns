@@ -26,6 +26,7 @@ type AdventureFactory[T any] struct {
 // NewFactory create a bmw factory
 func NewFactory() *Factory {
 	newFactory := Factory{}
+
 	return &newFactory
 }
 
@@ -34,19 +35,37 @@ func (f *Factory) CreateUrban() motorcycles.UrbanBehavior {
 }
 func (f *UrbanFactory[T]) CreateUrban() T {
 	var bike interface{} = urbans.New()
-	return bike.(T)
+
+	newBike, ok := bike.(T)
+	if !ok {
+		return newBike
+	}
+
+	return newBike
 }
 func (f *Factory) CreateSport() motorcycles.SportBehavior {
 	return sports.New()
 }
 func (f *SportFactory[T]) CreateSport() T {
 	var bike interface{} = sports.New()
-	return bike.(T)
+
+	newBike, ok := bike.(T)
+	if !ok {
+		return newBike
+	}
+
+	return newBike
 }
 func (f *Factory) CreateAdventure() motorcycles.AdventureBehavior {
 	return adventures.New()
 }
 func (f *AdventureFactory[T]) CreateAdventure() T {
 	var bike interface{} = adventures.New()
-	return bike.(T)
+
+	newBike, ok := bike.(T)
+	if !ok {
+		return newBike
+	}
+
+	return newBike
 }

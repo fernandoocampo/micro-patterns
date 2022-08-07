@@ -1,9 +1,9 @@
 package engines
 
-// EngineType engine type
+// EngineType define engine types.
 type EngineType int32
 
-// BuildData contains data to build a new engine
+// BuildData contains data to build a new engine.
 type BuildData struct {
 	Power     float32
 	Type      EngineType
@@ -39,6 +39,7 @@ func NewFactory(line Creator) *EngineFactory {
 	newFactory := EngineFactory{
 		line: line,
 	}
+
 	return &newFactory
 }
 

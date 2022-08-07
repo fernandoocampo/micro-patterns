@@ -8,6 +8,7 @@ import (
 )
 
 func TestScooterBuilder(t *testing.T) {
+	t.Parallel()
 	// Given
 	expectedScooter := motorcycles.Scooter{
 		Serie: "12abc",
@@ -33,7 +34,8 @@ func TestScooterBuilder(t *testing.T) {
 	centralComputerID := "xyz123"
 	builder := motorcycles.NewScooterBuilder()
 	// When
-	newScooter := builder.New(scooterSerie).
+	newScooter := builder.
+		WithSerie(scooterSerie).
 		WithEngine(engineData).
 		WithFairing(fairingID).
 		WithCentralComputer(centralComputerID).

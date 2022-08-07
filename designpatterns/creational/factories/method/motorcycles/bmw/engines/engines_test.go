@@ -8,6 +8,8 @@ import (
 )
 
 func TestCreateEngines(t *testing.T) {
+	t.Parallel()
+
 	cases := map[string]struct {
 		want     *engines.Urban
 		input    engines.BuildData
@@ -31,9 +33,12 @@ func TestCreateEngines(t *testing.T) {
 	}
 
 	for name, data := range cases {
+		name, data := name, data
+
 		t.Run(name, func(st *testing.T) {
+			st.Parallel()
 			got := engines.NewFactory(data.category).BuildEngine(data.input)
-			assert.Equal(t, data.want, got)
+			assert.Equal(st, data.want, got)
 		})
 	}
 }

@@ -13,25 +13,24 @@ type UrbanCreator struct{}
 
 func NewUrbanCreator() *UrbanCreator {
 	newCreator := UrbanCreator{}
+
 	return &newCreator
 }
 
 func (u *UrbanCreator) Create(data BuildData) EngineBehavior {
-	engine := Urban{
-		Power:     data.Power,
-		Type:      data.Type,
-		Cylinders: data.Cylinders,
-		Torque:    data.Torque,
-	}
+	engine := Urban(data)
+
 	return &engine
 }
 
 func (u *Urban) IncreasePower() error {
 	u.Power += 5.0
+
 	return nil
 }
 
 func (u *Urban) ReducePower() error {
 	u.Power -= 5.0
+
 	return nil
 }

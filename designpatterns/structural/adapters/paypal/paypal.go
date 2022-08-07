@@ -1,7 +1,7 @@
 package paypal
 
 import (
-	"errors"
+	"fmt"
 	"log"
 
 	external "github.com/fernandoocampo/micro-patterns/designpatterns/structural/adapters/paypal/externalpaypal"
@@ -18,6 +18,7 @@ func NewClient() *Client {
 	newClient := Client{
 		paypal: &external.PaypalExternalAPI{},
 	}
+
 	return &newClient
 }
 
@@ -25,13 +26,17 @@ func (c *Client) Pay(data payments.PaymentParameters) (*payments.PaymentResponse
 	paypalParams := external.PaypalPayment{
 		TransactionID: data.TransactionID,
 	}
+
 	paypalResult, err := c.paypal.DoTransaction(paypalParams)
 	if err != nil {
 		log.Println("unexpected error paying with paypal", err)
-		return nil, errors.New("cannot process payment")
+
+		return nil, fmt.Errorf("cannot process payment %w", err)
 	}
+
 	result := payments.PaymentResponse{
 		TransactionID: paypalResult.TransactionID,
 	}
+
 	return &result, nil
 }

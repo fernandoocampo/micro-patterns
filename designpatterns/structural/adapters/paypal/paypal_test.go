@@ -1,6 +1,7 @@
 package paypal_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/fernandoocampo/micro-patterns/designpatterns/structural/adapters/paypal"
@@ -9,8 +10,10 @@ import (
 )
 
 func TestPay(t *testing.T) {
+	t.Parallel()
 	// Given
 	var expectedError error
+
 	expectedPaymentResult := payments.PaymentResponse{
 		TransactionID: "123",
 	}
@@ -27,7 +30,13 @@ func TestPay(t *testing.T) {
 
 func doPayment(t *testing.T, paymentProvider PaymentAdapter, paymentData payments.PaymentParameters) (*payments.PaymentResponse, error) {
 	t.Helper()
-	return paymentProvider.Pay(paymentData)
+
+	result, err := paymentProvider.Pay(paymentData)
+	if err != nil {
+		err = fmt.Errorf("unexpecte error %w", err)
+	}
+
+	return result, err
 }
 
 type PaymentAdapter interface {

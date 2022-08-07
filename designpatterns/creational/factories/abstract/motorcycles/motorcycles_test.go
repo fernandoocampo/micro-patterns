@@ -17,6 +17,8 @@ import (
 )
 
 func TestCreateUrbanMotorcycles(t *testing.T) {
+	t.Parallel()
+
 	cases := map[string]struct {
 		want       motorcycles.UrbanBehavior
 		factory    brand
@@ -26,7 +28,7 @@ func TestCreateUrbanMotorcycles(t *testing.T) {
 		"unknown_factory": {
 			want:    nil,
 			factory: brand(6),
-			err:     errUnknowBrand,
+			err:     errUnknownBrand,
 		},
 		"urban_bmw": {
 			want: &urbanbmw.Scooter{
@@ -51,25 +53,33 @@ func TestCreateUrbanMotorcycles(t *testing.T) {
 	}
 
 	for name, data := range cases {
-		t.Run(name, func(st *testing.T) {
+		name, data := name, data
+		t.Run(name, func(subtest *testing.T) {
+			subtest.Parallel()
 			factory, err := newFactory(data.factory)
 			if data.err != err {
-				st.Errorf("want err: %+v, but got: %+v", data.err, err)
-				st.FailNow()
+				subtest.Errorf("want err: %+v, but got: %+v", data.err, err)
+				subtest.FailNow()
 			}
 			if data.err != nil {
 				return
 			}
 			got := factory.CreateUrban()
-			got.StartEngine()
-			got.SpeedUp(data.speedToAdd)
+			errStartEngine := got.StartEngine()
+			if errStartEngine != nil {
+				subtest.Fatalf("unexpected error: %s", errStartEngine)
+			}
+			errSpeedUp := got.SpeedUp(data.speedToAdd)
+			if errSpeedUp != nil {
+				subtest.Fatalf("unexpected error: %s", errSpeedUp)
+			}
 
-			assert.Equal(st, data.want, got)
+			assert.Equal(subtest, data.want, got)
 		})
 	}
 }
 
-func TestCreateSportMotorcycles(t *testing.T) {
+func TestCreateSportBike(t *testing.T) {
 	cases := map[string]struct {
 		want       motorcycles.SportBehavior
 		factory    brand
@@ -107,24 +117,37 @@ func TestCreateSportMotorcycles(t *testing.T) {
 			err:        nil,
 		},
 	}
-
 	for name, data := range cases {
-		t.Run(name, func(st *testing.T) {
+		name, data := name, data
+		t.Run(name, func(subtest *testing.T) {
+			subtest.Parallel()
 			factory, err := newFactory(data.factory)
 			if data.err != err {
-				st.Errorf("want err: %+v, but got: %+v", data.err, err)
-				st.FailNow()
+				subtest.Errorf("want err: %+v, but got: %+v", data.err, err)
+				subtest.FailNow()
 			}
 			if data.err != nil {
 				return
 			}
 			got := factory.CreateSport()
-			got.StartEngine()
-			got.SpeedUp(data.speedToAdd)
-			got.IncreasePower(data.power)
-			got.ActivateDrivingMode(data.driveMode)
+			errStartEngine := got.StartEngine()
+			if errStartEngine != nil {
+				subtest.Fatalf("unexpected error: %s", errStartEngine)
+			}
+			errSpeedUp := got.SpeedUp(data.speedToAdd)
+			if errSpeedUp != nil {
+				subtest.Fatalf("unexpected error: %s", errSpeedUp)
+			}
+			errIncreasePower := got.IncreasePower(data.power)
+			if errIncreasePower != nil {
+				subtest.Fatalf("unexpected error: %s", errIncreasePower)
+			}
+			errActivateDrivingMode := got.ActivateDrivingMode(data.driveMode)
+			if errActivateDrivingMode != nil {
+				subtest.Fatalf("unexpected error: %s", errActivateDrivingMode)
+			}
 
-			assert.Equal(st, data.want, got)
+			assert.Equal(subtest, data.want, got)
 		})
 	}
 }
@@ -145,7 +168,7 @@ const (
 	Ducati
 )
 
-var errUnknowBrand = errors.New("unkown brand")
+var errUnknownBrand = errors.New("unknown brand")
 
 // newFactory creates a factory to create motorcycle products
 func newFactory(factory brand) (factory, error) {
@@ -155,6 +178,6 @@ func newFactory(factory brand) (factory, error) {
 	case Ducati:
 		return ducati.NewFactory(), nil
 	default:
-		return nil, errUnknowBrand
+		return nil, errUnknownBrand
 	}
 }

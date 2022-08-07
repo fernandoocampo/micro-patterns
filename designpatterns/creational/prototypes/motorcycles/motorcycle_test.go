@@ -8,6 +8,7 @@ import (
 )
 
 func TestCloneMotorcycle(t *testing.T) {
+	t.Parallel()
 	// Given
 	motorcycle := &motorcycles.Motorcycle{
 		Brand: "bmw",
@@ -28,6 +29,8 @@ type CloneableMotorcycles interface {
 
 func callClone(t *testing.T, m CloneableMotorcycles) *motorcycles.Motorcycle {
 	t.Helper()
+
 	clonedMotorcycle := m.Clone()
+
 	return &clonedMotorcycle
 }

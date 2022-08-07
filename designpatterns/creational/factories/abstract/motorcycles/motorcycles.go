@@ -1,6 +1,6 @@
 package motorcycles
 
-// Brand defines the motorcycle brand
+// Brand defines the motorcycle brands.
 type Brand int32
 
 // UrbanBehavior defines a characteristic behavior of urban motorcycles.

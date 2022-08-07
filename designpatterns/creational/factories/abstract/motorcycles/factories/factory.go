@@ -29,7 +29,7 @@ const (
 	Ducati
 )
 
-var ErrUnknowBrand = errors.New("unkown brand")
+var ErrUnknowBrand = errors.New("unknown brand")
 
 // NewUrbanFactory creates an urban motorcycle factory.
 func NewUrbanFactory(brand motorcycles.Brand) (UrbanCreator, error) {
