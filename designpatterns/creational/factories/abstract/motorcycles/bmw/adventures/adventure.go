@@ -42,16 +42,19 @@ func (a *Adventure) ActivateDrivingMode(mode string) error {
 
 	return nil
 }
+
 func (a *Adventure) IncreasePower(power float32) error {
 	a.Power = power
 
 	return nil
 }
+
 func (a *Adventure) ActiveCruiseControl() error {
 	a.CruiseControl = true
 
 	return nil
 }
+
 func (a *Adventure) AdjustSuspensions() error {
 	log.Println("adjusting suspensions")
 

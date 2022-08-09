@@ -8,7 +8,7 @@ type Urban struct {
 	Torque    float32
 }
 
-// UrbanCreator defines an urban engine creator
+// UrbanCreator defines an urban engine creator.
 type UrbanCreator struct{}
 
 func NewUrbanCreator() *UrbanCreator {

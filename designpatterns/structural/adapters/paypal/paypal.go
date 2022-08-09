@@ -8,7 +8,7 @@ import (
 	"github.com/fernandoocampo/micro-patterns/designpatterns/structural/adapters/sales/payments"
 )
 
-// Client paypal client
+// Client paypal client.
 type Client struct {
 	paypal *external.PaypalExternalAPI
 }

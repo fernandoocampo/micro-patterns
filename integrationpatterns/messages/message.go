@@ -1,39 +1,43 @@
 package messages
 
-import "context"
+import (
+	"context"
+	"fmt"
+)
 
 // Message data that is to be transmitted via a messaging system.
 type Message struct {
 	Code, Value string
 }
 
-type sender struct {
+type Sender struct {
 	messageStream chan<- Message
 }
-type receiver struct {
+type Receiver struct {
 	started       bool
 	messageStream <-chan Message
 	auditStream   chan Message
 }
 
-func NewMessageSender(messageChannel chan<- Message) sender {
-	return sender{
+func NewMessageSender(messageChannel chan<- Message) Sender {
+	return Sender{
 		messageStream: messageChannel,
 	}
 }
 
-func NewMessageReceiver(messageChannel <-chan Message) receiver {
-	newReceiver := receiver{
+func NewMessageReceiver(messageChannel <-chan Message) Receiver {
+	newReceiver := Receiver{
 		messageStream: messageChannel,
 		auditStream:   make(chan Message),
 	}
+
 	return newReceiver
 }
 
-func (s sender) Send(ctx context.Context, message Message) error {
+func (s Sender) Send(ctx context.Context, message Message) error {
 	select {
 	case <-ctx.Done():
-		return ctx.Err()
+		return fmt.Errorf("context finalized: %w", ctx.Err())
 	default:
 		go func() {
 			s.messageStream <- message
@@ -43,7 +47,11 @@ func (s sender) Send(ctx context.Context, message Message) error {
 	return nil
 }
 
-func (r receiver) Start(ctx context.Context) {
+func (r Receiver) Start(ctx context.Context) {
+	if r.started {
+		return
+	}
+
 	go func() {
 		for {
 			select {
@@ -53,13 +61,16 @@ func (r receiver) Start(ctx context.Context) {
 				if !ok {
 					return
 				}
+
 				go r.doAudit(ctx, newMessage)
 			}
 		}
 	}()
+
+	r.started = true
 }
 
-func (r receiver) doAudit(ctx context.Context, message Message) {
+func (r Receiver) doAudit(ctx context.Context, message Message) {
 	select {
 	case <-ctx.Done():
 		return
@@ -68,6 +79,6 @@ func (r receiver) doAudit(ctx context.Context, message Message) {
 	}
 }
 
-func (r receiver) Audit() <-chan Message {
+func (r Receiver) Audit() <-chan Message {
 	return r.auditStream
 }

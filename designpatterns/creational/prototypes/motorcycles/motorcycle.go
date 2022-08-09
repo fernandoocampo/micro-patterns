@@ -1,6 +1,6 @@
 package motorcycles
 
-// Motorcycle contains data related to a motorcycle
+// Motorcycle contains data related to a motorcycle.
 type Motorcycle struct {
 	Brand string
 	Name  string

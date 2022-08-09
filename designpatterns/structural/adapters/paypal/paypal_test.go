@@ -17,26 +17,34 @@ func TestPay(t *testing.T) {
 	expectedPaymentResult := payments.PaymentResponse{
 		TransactionID: "123",
 	}
-	paymentData := payments.PaymentParameters{
-		TransactionID: "123",
+	cmd := paymentCommand{
+		paymentData: payments.PaymentParameters{
+			TransactionID: "123",
+		},
+		paymentProvider: paypal.NewClient(),
 	}
-	paymentProvider := paypal.NewClient()
+
 	// When
-	got, err := doPayment(t, paymentProvider, paymentData)
+	got, err := doPayment(t, cmd)
 	// Then
 	assert.Equal(t, expectedError, err)
 	assert.Equal(t, &expectedPaymentResult, got)
 }
 
-func doPayment(t *testing.T, paymentProvider PaymentAdapter, paymentData payments.PaymentParameters) (*payments.PaymentResponse, error) {
+func doPayment(t *testing.T, cmd paymentCommand) (*payments.PaymentResponse, error) {
 	t.Helper()
 
-	result, err := paymentProvider.Pay(paymentData)
+	result, err := cmd.paymentProvider.Pay(cmd.paymentData)
 	if err != nil {
 		err = fmt.Errorf("unexpecte error %w", err)
 	}
 
 	return result, err
+}
+
+type paymentCommand struct {
+	paymentProvider PaymentAdapter
+	paymentData     payments.PaymentParameters
 }
 
 type PaymentAdapter interface {

@@ -11,7 +11,7 @@ type BuildData struct {
 	Torque    float32
 }
 
-// EngineBehavior defines engine behavior
+// EngineBehavior defines engine behavior.
 type EngineBehavior interface {
 	IncreasePower() error
 	ReducePower() error
@@ -34,7 +34,7 @@ type EngineFactory struct {
 	line Creator
 }
 
-// NewFactory creates a new factory
+// NewFactory creates a new factory.
 func NewFactory(line Creator) *EngineFactory {
 	newFactory := EngineFactory{
 		line: line,

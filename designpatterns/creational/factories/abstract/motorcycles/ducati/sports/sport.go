@@ -1,11 +1,9 @@
 package sports
 
 type Sport struct {
-	EngineOn    bool
-	Speed       float32
-	Moving      bool
-	DrivingMode string
-	Power       float32
+	EngineOn, Moving bool
+	Speed, Power     float32
+	DrivingMode      string
 }
 
 // New creates sport  motorcycles.
@@ -43,6 +41,7 @@ func (s *Sport) ActivateDrivingMode(mode string) error {
 
 	return nil
 }
+
 func (s *Sport) IncreasePower(power float32) error {
 	s.Power = power
 

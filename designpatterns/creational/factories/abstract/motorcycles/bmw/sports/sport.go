@@ -41,6 +41,7 @@ func (s *Sport) ActivateDrivingMode(mode string) error {
 
 	return nil
 }
+
 func (s *Sport) IncreasePower(power float32) error {
 	s.Power = power
 

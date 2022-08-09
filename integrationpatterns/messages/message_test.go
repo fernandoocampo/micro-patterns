@@ -10,6 +10,8 @@ import (
 )
 
 func TestMessage(t *testing.T) {
+	t.Parallel()
+	// Given
 	message := messages.Message{
 		Code:  "200",
 		Value: "Success",
@@ -19,27 +21,34 @@ func TestMessage(t *testing.T) {
 		Value: "Success",
 	}
 	ctx := context.TODO()
+
 	ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
 	defer cancel()
+
 	messageChannel := make(chan messages.Message)
 	sender := messages.NewMessageSender(messageChannel)
 	receiver := messages.NewMessageReceiver(messageChannel)
+
 	receiver.Start(ctx)
 
+	// When
 	err := sender.Send(ctx, message)
-	var ok bool
+
+	var closed bool
+
 	var newMessage messages.Message
+
 	select {
 	case <-ctx.Done():
 		if ctx.Err() != nil {
 			t.Log(ctx.Err())
 		}
-	case newMessage, ok = <-receiver.Audit():
-		if !ok {
+	case newMessage, closed = <-receiver.Audit():
+		if !closed {
 			t.Log("receivir audit channel was closed")
 		}
 	}
-
+	// Then
 	assert.NoError(t, err)
 	assert.Equal(t, expectedMessage, newMessage)
 }

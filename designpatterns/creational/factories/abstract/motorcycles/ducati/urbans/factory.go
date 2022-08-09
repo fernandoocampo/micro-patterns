@@ -1,9 +1,8 @@
 package urbans
 
 type Scooter struct {
-	EngineOn bool
-	Speed    float32
-	Moving   bool
+	EngineOn, Moving bool
+	Speed            float32
 }
 
 func New() *Scooter {

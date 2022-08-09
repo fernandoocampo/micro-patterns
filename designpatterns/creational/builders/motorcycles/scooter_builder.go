@@ -1,6 +1,6 @@
 package motorcycles
 
-type scooterBuilder struct {
+type ScooterBuilder struct {
 	scooter *Scooter
 }
 
@@ -9,21 +9,22 @@ type EngineSpecification struct {
 	HorsePower       int
 }
 
-func NewScooterBuilder() *scooterBuilder {
-	newScooterBuilder := new(scooterBuilder)
+func NewScooterBuilder() *ScooterBuilder {
+	newScooterBuilder := new(ScooterBuilder)
 	newScooterBuilder.scooter = new(Scooter)
 
 	return newScooterBuilder
 }
 
-func (s *scooterBuilder) WithSerie(serie string) *scooterBuilder {
+func (s *ScooterBuilder) WithSerie(serie string) *ScooterBuilder {
 	newScooter := new(Scooter)
 	newScooter.Serie = serie
 	s.scooter = newScooter
 
 	return s
 }
-func (s *scooterBuilder) WithEngine(engineSpecification EngineSpecification) *scooterBuilder {
+
+func (s *ScooterBuilder) WithEngine(engineSpecification EngineSpecification) *ScooterBuilder {
 	newEngine := Engine{
 		CC: engineSpecification.CylinderCapacity,
 		HP: engineSpecification.HorsePower,
@@ -32,8 +33,9 @@ func (s *scooterBuilder) WithEngine(engineSpecification EngineSpecification) *sc
 
 	return s
 }
-func (s *scooterBuilder) WithFairing(fairingID string) *scooterBuilder {
-	// TODO for now we are going to imagen there are a fairing catalog
+
+func (s *ScooterBuilder) WithFairing(fairingID string) *ScooterBuilder {
+	// for now we are going to imagen there are a fairing catalog
 	newFairing := Fairing{
 		Version: fairingID,
 		Model:   fairingID + "-abc-2022",
@@ -42,7 +44,8 @@ func (s *scooterBuilder) WithFairing(fairingID string) *scooterBuilder {
 
 	return s
 }
-func (s *scooterBuilder) WithCentralComputer(centralComputerID string) *scooterBuilder {
+
+func (s *ScooterBuilder) WithCentralComputer(centralComputerID string) *ScooterBuilder {
 	newCC := CentralComputer{
 		Version: centralComputerID,
 		Model:   "abc",
@@ -51,6 +54,7 @@ func (s *scooterBuilder) WithCentralComputer(centralComputerID string) *scooterB
 
 	return s
 }
-func (s *scooterBuilder) Build() *Scooter {
+
+func (s *ScooterBuilder) Build() *Scooter {
 	return s.scooter
 }
