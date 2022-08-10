@@ -13,6 +13,7 @@ type Message struct {
 type Sender struct {
 	messageStream chan<- Message
 }
+
 type Receiver struct {
 	started       bool
 	messageStream <-chan Message
