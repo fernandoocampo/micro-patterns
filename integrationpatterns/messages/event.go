@@ -75,6 +75,7 @@ func (p *PricePublisher) Publish(ctx context.Context, event PriceEvent) {
 func (p *PriceTopic) publish(ctx context.Context, event PriceEvent) {
 	for idx := range p.subscribers {
 		subscriber := p.subscribers[idx]
+
 		go func() {
 			select {
 			case <-ctx.Done():

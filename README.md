@@ -1,4 +1,4 @@
-[![Go Report Card](https://goreportcard.com/badge/github.com/fernandoocampo/micro-patterns)](https://goreportcard.com/report/github.com/fernandoocampo/micro-patterns) ![CI](https://github.com/fernandoocampo/micro-patterns/actions/workflows/quality.yaml/badge.svg?branch=main) [![GoDoc](https://godoc.org/github.com/fernandoocampo/micro-patterns?status.svg)](https://godoc.org/github.com/fernandoocampo/micro-patterns)
+[![Go Report Card](https://goreportcard.com/badge/github.com/fernandoocampo/micro-patterns)](https://goreportcard.com/report/github.com/fernandoocampo/micro-patterns) ![CI](https://github.com/fernandoocampo/micro-patterns/actions/workflows/quality.yaml/badge.svg?branch=main) [![GoDoc](https://godoc.org/github.com/fernandoocampo/micro-patterns?status.svg)](https://godoc.org/github.com/fernandoocampo/micro-patterns) ![github watchers](https://img.shields.io/github/watchers/fernandoocampo/micro-patterns?style=social) [![github contributors](https://img.shields.io/github/contributors/fernandoocampo/micro-patterns)](https://github.com/fernandoocampo/micro-patterns/graphs/contributors)
 
 # micro-patterns
 

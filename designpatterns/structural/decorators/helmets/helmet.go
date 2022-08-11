@@ -7,19 +7,19 @@ type Protector interface {
 	Protect(impactForceLevel float32) float32
 }
 
-// Helment contains helmet data.
-type Helment struct {
+// Helmet contains helmet data.
+type Helmet struct {
 	nextProtector Protector
 }
 
-func New() *Helment {
-	return new(Helment)
+func New() *Helmet {
+	return new(Helmet)
 }
 
-func (h *Helment) SetProtection(protector Protector) {
+func (h *Helmet) SetProtection(protector Protector) {
 	h.nextProtector = protector
 }
 
-func (h *Helment) Protect(impactForceLevel float32) float32 {
+func (h *Helmet) Protect(impactForceLevel float32) float32 {
 	return h.nextProtector.Protect(impactForceLevel)
 }

@@ -13,12 +13,16 @@ import (
 )
 
 func TestDressRider(t *testing.T) {
+	t.Parallel()
 	// Given
 	expectedDamageReport := riders.DamageReport{
 		Head: 299.25,
 	}
+
 	impactForceLevel := float32(2000.0)
+
 	var helmetLayer helmets.Protector
+
 	helmet := helmets.New()
 	helmetLayer = liners.NewWithoutProtector()
 	helmetLayer = comforts.New(helmetLayer)

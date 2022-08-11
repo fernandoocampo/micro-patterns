@@ -18,6 +18,7 @@ func New(protector Protector) *Comfort {
 	newBoot := Comfort{
 		nextProtector: protector,
 	}
+
 	return &newBoot
 }
 
@@ -26,7 +27,7 @@ func (c *Comfort) Protect(impactForceLevel float32) float32 {
 		return 0.0
 	}
 
-	impactForceLevel = impactForceLevel - (impactForceLevel * levelOfProtectionPerImpact)
+	impactForceLevel -= (impactForceLevel * levelOfProtectionPerImpact)
 	if c.nextProtector == nil {
 		return impactForceLevel
 	}

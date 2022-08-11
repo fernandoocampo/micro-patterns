@@ -19,6 +19,7 @@ func New(name string) *Rider {
 
 func (r *Rider) WithHelmet(helmet helmets.Protector) *Rider {
 	r.helmet = helmet
+
 	return r
 }
 

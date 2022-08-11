@@ -18,6 +18,7 @@ func New(protector Protector) *Liner {
 	newBoot := Liner{
 		nextProtector: protector,
 	}
+
 	return &newBoot
 }
 
@@ -30,7 +31,7 @@ func (l *Liner) Protect(impactForceLevel float32) float32 {
 		return 0.0
 	}
 
-	impactForceLevel = impactForceLevel - (impactForceLevel * levelOfProtectionPerImpact)
+	impactForceLevel -= (impactForceLevel * levelOfProtectionPerImpact)
 	if l.nextProtector == nil {
 		return impactForceLevel
 	}

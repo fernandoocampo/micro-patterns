@@ -18,6 +18,7 @@ func New(protector Protector) *Shield {
 	newBoot := Shield{
 		nextProtector: protector,
 	}
+
 	return &newBoot
 }
 
@@ -26,7 +27,7 @@ func (s *Shield) Protect(impactForceLevel float32) float32 {
 		return 0.0
 	}
 
-	impactForceLevel = impactForceLevel - (impactForceLevel * levelOfProtectionPerImpact)
+	impactForceLevel -= (impactForceLevel * levelOfProtectionPerImpact)
 	if s.nextProtector == nil {
 		return impactForceLevel
 	}

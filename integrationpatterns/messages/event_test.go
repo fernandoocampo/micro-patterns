@@ -9,6 +9,7 @@ import (
 )
 
 func TestEventMessage(t *testing.T) {
+	t.Parallel()
 	// Given
 	event := messages.PriceEvent{
 		OldPrice:  3.45,
