@@ -1,23 +1,22 @@
 package factories_test
 
 import (
-	"errors"
 	"testing"
 
-	assert "github.com/stretchr/testify/assert"
-
 	motorcycles "github.com/fernandoocampo/micro-patterns/designpatterns/creational/factories/abstract/motorcycles"
+	"github.com/fernandoocampo/micro-patterns/designpatterns/creational/factories/abstract/motorcycles/bmw"
 	sportbmw "github.com/fernandoocampo/micro-patterns/designpatterns/creational/factories/abstract/motorcycles/bmw/sports"
 	urbanbmw "github.com/fernandoocampo/micro-patterns/designpatterns/creational/factories/abstract/motorcycles/bmw/urbans"
+	"github.com/fernandoocampo/micro-patterns/designpatterns/creational/factories/abstract/motorcycles/ducati"
 	sportducati "github.com/fernandoocampo/micro-patterns/designpatterns/creational/factories/abstract/motorcycles/ducati/sports"
 	urbanducati "github.com/fernandoocampo/micro-patterns/designpatterns/creational/factories/abstract/motorcycles/ducati/urbans"
-
 	factories "github.com/fernandoocampo/micro-patterns/designpatterns/creational/factories/abstract/motorcycles/factories"
+	assert "github.com/stretchr/testify/assert"
 )
 
 type testSportData struct {
 	want       motorcycles.SportBehavior
-	factory    motorcycles.Brand
+	factory    factories.SportCreator
 	driveMode  string
 	power      float32
 	speedToAdd float32
@@ -26,7 +25,7 @@ type testSportData struct {
 
 type testUrbanData struct {
 	want       motorcycles.UrbanBehavior
-	factory    motorcycles.Brand
+	factory    factories.UrbanCreator
 	speedToAdd float32
 	err        error
 }
@@ -35,11 +34,6 @@ func TestCreateUrbanMotorcycles(t *testing.T) {
 	t.Parallel()
 
 	cases := map[string]testUrbanData{
-		"unknown_factory": {
-			want:    nil,
-			factory: motorcycles.Brand(6),
-			err:     factories.ErrUnknowBrand,
-		},
 		"urban_bmw": {
 			want: &urbanbmw.Scooter{
 				EngineOn: true,
@@ -47,7 +41,7 @@ func TestCreateUrbanMotorcycles(t *testing.T) {
 				Moving:   true,
 			},
 			speedToAdd: 34.5,
-			factory:    factories.BMW,
+			factory:    &bmw.UrbanFactory[motorcycles.UrbanBehavior]{},
 			err:        nil,
 		},
 		"urban_ducati": {
@@ -57,7 +51,7 @@ func TestCreateUrbanMotorcycles(t *testing.T) {
 				Moving:   true,
 			},
 			speedToAdd: 55.5,
-			factory:    factories.Ducati,
+			factory:    &ducati.UrbanFactory[motorcycles.UrbanBehavior]{},
 			err:        nil,
 		},
 	}
@@ -90,7 +84,7 @@ func TestCreateSportBike(t *testing.T) {
 			driveMode:  "rain",
 			power:      200,
 			speedToAdd: 34.5,
-			factory:    factories.BMW,
+			factory:    &bmw.SportFactory[motorcycles.SportBehavior]{},
 			err:        nil,
 		},
 		"sport_ducati": {
@@ -104,7 +98,7 @@ func TestCreateSportBike(t *testing.T) {
 			driveMode:  "race",
 			power:      250,
 			speedToAdd: 55.5,
-			factory:    factories.Ducati,
+			factory:    &ducati.SportFactory[motorcycles.SportBehavior]{},
 			err:        nil,
 		},
 	}
@@ -122,17 +116,9 @@ func TestCreateSportBike(t *testing.T) {
 }
 
 func createAndTestUrbanEngine(t *testing.T, data testUrbanData) motorcycles.UrbanBehavior {
-	factory, err := factories.NewUrbanFactory(data.factory)
-	if !errors.Is(data.err, err) {
-		t.Errorf("want err: %+v, but got: %+v", data.err, err)
-		t.FailNow()
-	}
+	t.Helper()
 
-	if data.err != nil {
-		return nil
-	}
-
-	got := factory.CreateUrban()
+	got := data.factory.CreateUrban()
 
 	errStartEngine := got.StartEngine()
 	if errStartEngine != nil {
@@ -150,17 +136,7 @@ func createAndTestUrbanEngine(t *testing.T, data testUrbanData) motorcycles.Urba
 func createAndTestSportEngine(t *testing.T, data testSportData) motorcycles.SportBehavior {
 	t.Helper()
 
-	factory, err := factories.NewSportFactory(data.factory)
-	if !errors.Is(data.err, err) {
-		t.Errorf("want err: %+v, but got: %+v", data.err, err)
-		t.FailNow()
-	}
-
-	if data.err != nil {
-		return nil
-	}
-
-	got := factory.CreateSport()
+	got := data.factory.CreateSport()
 
 	errStartEngine := got.StartEngine()
 	if errStartEngine != nil {

@@ -10,6 +10,8 @@ import (
 )
 
 func TestCommandMessageCreate(t *testing.T) {
+	t.Parallel()
+
 	expectedOrder := messages.Order{
 		ID:       1234,
 		Amount:   23.45,
@@ -65,5 +67,4 @@ func TestCommandMessageCreate(t *testing.T) {
 	// Then
 	assert.NoError(t, err)
 	assert.Equal(t, expectedOrder, newMessage)
-
 }

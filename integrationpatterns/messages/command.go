@@ -47,9 +47,9 @@ const (
 
 // order field names.
 const (
-	id_field       = "ID"
-	amount_field   = "amount"
-	location_field = "location"
+	idField       = "ID"
+	amountField   = "amount"
+	locationField = "location"
 )
 
 func NewCommandMessageSender(messageChannel chan<- CommandMessage) CommandSender {
@@ -94,6 +94,7 @@ func (r CommandReceiver) Start(ctx context.Context) {
 				if !ok {
 					return
 				}
+
 				r.processCommand(ctx, newMessage)
 			}
 		}
@@ -106,6 +107,7 @@ func (r CommandReceiver) processCommand(ctx context.Context, message CommandMess
 	switch message.ID {
 	case Create:
 		log.Println("creating order")
+
 		newOrder := r.transformCommandToOrder(message.Parameters)
 		r.createOrder(ctx, newOrder)
 	default:
@@ -116,16 +118,16 @@ func (r CommandReceiver) processCommand(ctx context.Context, message CommandMess
 func (r CommandReceiver) transformCommandToOrder(parameters []Parameter) Order {
 	var result Order
 
-	for _, p := range parameters {
-		switch p.Name {
-		case id_field:
-			result.setID(p.Value)
-		case amount_field:
-			result.setAmount(p.Value)
-		case location_field:
-			result.setLocation(p.Value)
+	for idx := range parameters {
+		switch parameters[idx].Name {
+		case idField:
+			result.setID(parameters[idx].Value)
+		case amountField:
+			result.setAmount(parameters[idx].Value)
+		case locationField:
+			result.setLocation(parameters[idx].Value)
 		default:
-			log.Println("unknown field", p)
+			log.Println("unknown field", parameters[idx])
 		}
 	}
 
@@ -134,6 +136,7 @@ func (r CommandReceiver) transformCommandToOrder(parameters []Parameter) Order {
 
 func (r CommandReceiver) createOrder(ctx context.Context, order Order) {
 	log.Println("creating order", order)
+
 	go r.doAudit(ctx, order)
 }
 
@@ -155,16 +158,19 @@ func (o *Order) setID(value interface{}) {
 	if !ok {
 		return
 	}
+
 	o.ID = v
 }
 
 func (o *Order) setAmount(value interface{}) {
-	v, ok := value.(float64)
+	floatValue, ok := value.(float64)
 	if !ok {
 		log.Printf("unexpected value: %v with type: %T", value, value)
+
 		return
 	}
-	o.Amount = float32(v)
+
+	o.Amount = float32(floatValue)
 }
 
 func (o *Order) setLocation(value interface{}) {
@@ -172,5 +178,6 @@ func (o *Order) setLocation(value interface{}) {
 	if !ok {
 		return
 	}
+
 	o.Location = v
 }

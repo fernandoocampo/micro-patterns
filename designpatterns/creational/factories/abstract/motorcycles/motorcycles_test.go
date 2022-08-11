@@ -1,7 +1,6 @@
 package motorcycles_test
 
 import (
-	"errors"
 	"testing"
 
 	assert "github.com/stretchr/testify/assert"
@@ -18,27 +17,24 @@ import (
 
 type testSportData struct {
 	want       motorcycles.SportBehavior
-	factory    brand
+	factory    factory
 	driveMode  string
 	power      float32
 	speedToAdd float32
 	err        error
 }
 
+type testUrbanData struct {
+	want       motorcycles.UrbanBehavior
+	factory    factory
+	err        error
+	speedToAdd float32
+}
+
 func TestCreateUrbanMotorcycles(t *testing.T) {
 	t.Parallel()
 
-	cases := map[string]struct {
-		want       motorcycles.UrbanBehavior
-		factory    brand
-		speedToAdd float32
-		err        error
-	}{
-		"unknown_factory": {
-			want:    nil,
-			factory: brand(6),
-			err:     errUnknownBrand,
-		},
+	cases := map[string]testUrbanData{
 		"urban_bmw": {
 			want: &urbanbmw.Scooter{
 				EngineOn: true,
@@ -46,7 +42,7 @@ func TestCreateUrbanMotorcycles(t *testing.T) {
 				Moving:   true,
 			},
 			speedToAdd: 34.5,
-			factory:    BMW,
+			factory:    bmw.NewFactory(),
 			err:        nil,
 		},
 		"urban_ducati": {
@@ -56,7 +52,7 @@ func TestCreateUrbanMotorcycles(t *testing.T) {
 				Moving:   true,
 			},
 			speedToAdd: 55.5,
-			factory:    Ducati,
+			factory:    ducati.NewFactory(),
 			err:        nil,
 		},
 	}
@@ -65,15 +61,7 @@ func TestCreateUrbanMotorcycles(t *testing.T) {
 		name, data := name, data
 		t.Run(name, func(subtest *testing.T) {
 			subtest.Parallel()
-			factory, err := newFactory(data.factory)
-			if !errors.Is(data.err, err) {
-				subtest.Errorf("want err: %+v, but got: %+v", data.err, err)
-				subtest.FailNow()
-			}
-			if data.err != nil {
-				return
-			}
-			got := factory.CreateUrban()
+			got := data.factory.CreateUrban()
 			errStartEngine := got.StartEngine()
 			if errStartEngine != nil {
 				subtest.Fatalf("unexpected error: %s", errStartEngine)
@@ -103,7 +91,7 @@ func TestCreateSportBike(t *testing.T) {
 			driveMode:  "rain",
 			power:      200,
 			speedToAdd: 34.5,
-			factory:    BMW,
+			factory:    bmw.NewFactory(),
 			err:        nil,
 		},
 		"sport_ducati": {
@@ -117,7 +105,7 @@ func TestCreateSportBike(t *testing.T) {
 			driveMode:  "race",
 			power:      250,
 			speedToAdd: 55.5,
-			factory:    Ducati,
+			factory:    ducati.NewFactory(),
 			err:        nil,
 		},
 	}
@@ -134,17 +122,7 @@ func TestCreateSportBike(t *testing.T) {
 }
 
 func createAndTestSportBike(t *testing.T, data testSportData) motorcycles.SportBehavior {
-	factory, err := newFactory(data.factory)
-	if !errors.Is(data.err, err) {
-		t.Errorf("want err: %+v, but got: %+v", data.err, err)
-		t.FailNow()
-	}
-
-	if data.err != nil {
-		return nil
-	}
-
-	got := factory.CreateSport()
+	got := data.factory.CreateSport()
 
 	errStartEngine := got.StartEngine()
 	if errStartEngine != nil {
@@ -169,32 +147,9 @@ func createAndTestSportBike(t *testing.T, data testSportData) motorcycles.SportB
 	return got
 }
 
-// brand defines the motorcycle brand.
-type brand int32
-
 // factory defines behavior to create motorcycle products.
 type factory interface {
 	CreateUrban() motorcycles.UrbanBehavior
 	CreateSport() motorcycles.SportBehavior
 	CreateAdventure() motorcycles.AdventureBehavior
-}
-
-// Supported motorcycle brands.
-const (
-	BMW brand = iota
-	Ducati
-)
-
-var errUnknownBrand = errors.New("unknown brand")
-
-// newFactory creates a factory to create motorcycle products.
-func newFactory(factory brand) (factory, error) {
-	switch factory {
-	case BMW:
-		return bmw.NewFactory(), nil
-	case Ducati:
-		return ducati.NewFactory(), nil
-	default:
-		return nil, errUnknownBrand
-	}
 }
