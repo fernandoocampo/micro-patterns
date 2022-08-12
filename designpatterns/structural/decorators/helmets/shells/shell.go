@@ -15,10 +15,11 @@ type Shell struct {
 const levelOfProtectionPerImpact = 0.75
 
 func New(protector Protector) *Shell {
-	newBoot := Shell{
+	newShell := Shell{
 		nextProtector: protector,
 	}
-	return &newBoot
+
+	return &newShell
 }
 
 func (s *Shell) Protect(impactForceLevel float32) float32 {
@@ -26,7 +27,7 @@ func (s *Shell) Protect(impactForceLevel float32) float32 {
 		return 0.0
 	}
 
-	impactForceLevel = impactForceLevel - (impactForceLevel * levelOfProtectionPerImpact)
+	impactForceLevel -= (impactForceLevel * levelOfProtectionPerImpact)
 	if s.nextProtector == nil {
 		return impactForceLevel
 	}

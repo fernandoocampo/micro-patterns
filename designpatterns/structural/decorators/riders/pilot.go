@@ -14,6 +14,7 @@ type Rider struct {
 func New(name string) *Rider {
 	newRider := new(Rider)
 	newRider.name = name
+
 	return newRider
 }
 
