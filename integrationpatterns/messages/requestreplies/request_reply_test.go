@@ -1,4 +1,4 @@
-package messages_test
+package requestreplies_test
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/fernandoocampo/micro-patterns/integrationpatterns/messages"
+	"github.com/fernandoocampo/micro-patterns/integrationpatterns/messages/requestreplies"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -16,11 +16,11 @@ func TestRequestReply(t *testing.T) {
 	t.Parallel()
 
 	// Given
-	expectedReply := messages.Reply{
+	expectedReply := requestreplies.Reply{
 		Err:     nil,
 		Message: "accepted",
 	}
-	request := messages.Request{
+	request := requestreplies.Request{
 		ID:   1,
 		Code: "A",
 	}
@@ -28,10 +28,10 @@ func TestRequestReply(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.TODO(), 2*time.Second)
 	defer cancel()
 
-	receiver := messages.NewRequestReplyReceiver()
+	receiver := requestreplies.NewRequestReplyReceiver()
 	go receiver.Start(ctx)
 
-	sender := messages.NewRequestReplySender(receiver.RequestStream())
+	sender := requestreplies.NewRequestReplySender(receiver.RequestStream())
 	// When
 	sender.Send(ctx, request)
 	reply, err := readReply(ctx, t, sender)
@@ -40,12 +40,12 @@ func TestRequestReply(t *testing.T) {
 	assert.Equal(t, expectedReply, reply)
 }
 
-func readReply(ctx context.Context, t *testing.T, sender *messages.Requester) (messages.Reply, error) {
+func readReply(ctx context.Context, t *testing.T, sender *requestreplies.Requester) (requestreplies.Reply, error) {
 	t.Helper()
 
 	select {
 	case <-ctx.Done():
-		return messages.Reply{}, errContextCancelled
+		return requestreplies.Reply{}, errContextCancelled
 	case reply, ok := <-sender.ReplyStream():
 		if !ok {
 			t.Fatalf("reply stream was closed unexpectedly")

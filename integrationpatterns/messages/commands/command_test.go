@@ -1,26 +1,26 @@
-package messages_test
+package commands_test
 
 import (
 	"context"
 	"testing"
 	"time"
 
-	"github.com/fernandoocampo/micro-patterns/integrationpatterns/messages"
+	"github.com/fernandoocampo/micro-patterns/integrationpatterns/messages/commands"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCommandMessageCreate(t *testing.T) {
 	t.Parallel()
 
-	expectedOrder := messages.Order{
+	expectedOrder := commands.Order{
 		ID:       1234,
 		Amount:   23.45,
 		Location: "maria de los angeles",
 	}
-	cmdMessage := messages.CommandMessage{
-		ID:   messages.Create,
+	cmdMessage := commands.CommandMessage{
+		ID:   commands.Create,
 		Name: "create_order",
-		Parameters: []messages.Parameter{
+		Parameters: []commands.Parameter{
 			{
 				Name:  "ID",
 				Value: 1234,
@@ -41,9 +41,9 @@ func TestCommandMessageCreate(t *testing.T) {
 	ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
 	defer cancel()
 
-	messageChannel := make(chan messages.CommandMessage)
-	sender := messages.NewCommandMessageSender(messageChannel)
-	receiver := messages.NewCommandMessageReceiver(messageChannel)
+	messageChannel := make(chan commands.CommandMessage)
+	sender := commands.NewCommandMessageSender(messageChannel)
+	receiver := commands.NewCommandMessageReceiver(messageChannel)
 
 	receiver.Start(ctx)
 
@@ -52,7 +52,7 @@ func TestCommandMessageCreate(t *testing.T) {
 
 	var closed bool
 
-	var newMessage messages.Order
+	var newMessage commands.Order
 
 	select {
 	case <-ctx.Done():

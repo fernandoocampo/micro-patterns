@@ -39,8 +39,33 @@ Several applications would like to use event-notification to coordinate their ac
 When two applications communicate via Messaging, the communication is one-way. The applications may want a two-way conversation.
 
 * Problem
+
 > When an application sends a message, how can it get a response from the receiver?
 > How does a replier know where to send the reply?
+
 * Solution
+
 > Send a pair of Request-Reply messages, each on its own channel.
 > The request message should contain a Return Address that indicates where to send the reply message.
+
+## Return address
+
+Similar to Request/Reply, we need to answer this question `How does a replier know where to send the reply?`. The answer `the request message should contain a Return Address that indicates where to send the reply message`.
+
+## Correlation Identifier
+
+* Problem
+
+> How does a requestor that has received a reply know which request this is the reply for?
+
+* Solution
+
+> Each reply message should contain a Correlation Identifier, a unique identifier that indicates which request message this reply is for.
+
+There are also proposals like [OpenTelemetry](https://opentelemetry.io) that you can use to achieve this.
+
+* how to test?
+
+```sh
+go1.18.3 test -race -timeout 5s -count 1 -run ^TestCorrelationID$ github.com/fernandoocampo/micro-patterns/integrationpatterns/messages/correlations
+```
