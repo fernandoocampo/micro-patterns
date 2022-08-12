@@ -24,20 +24,23 @@ func TestRequestReply(t *testing.T) {
 		ID:   1,
 		Code: "A",
 	}
+
 	ctx, cancel := context.WithTimeout(context.TODO(), 2*time.Second)
 	defer cancel()
+
 	receiver := messages.NewRequestReplyReceiver()
 	go receiver.Start(ctx)
+
 	sender := messages.NewRequestReplySender(receiver.RequestStream())
 	// When
 	sender.Send(ctx, request)
-	reply, err := readReply(t, ctx, sender)
+	reply, err := readReply(ctx, t, sender)
 	// Then
 	assert.NoError(t, err)
 	assert.Equal(t, expectedReply, reply)
 }
 
-func readReply(t *testing.T, ctx context.Context, sender *messages.Requester) (messages.Reply, error) {
+func readReply(ctx context.Context, t *testing.T, sender *messages.Requester) (messages.Reply, error) {
 	t.Helper()
 
 	select {
@@ -47,6 +50,7 @@ func readReply(t *testing.T, ctx context.Context, sender *messages.Requester) (m
 		if !ok {
 			t.Fatalf("reply stream was closed unexpectedly")
 		}
+
 		return reply, nil
 	}
 }

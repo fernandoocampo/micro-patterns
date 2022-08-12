@@ -60,6 +60,7 @@ func (r *Requester) Send(ctx context.Context, request Request) {
 			if ctx.Err() != nil {
 				log.Println("error", ctx.Err().Error())
 			}
+
 			return
 		case r.requestStream <- requestReply:
 		}
@@ -82,8 +83,10 @@ func (r *Replier) Start(ctx context.Context) {
 		case request, ok := <-r.requestStream:
 			if !ok {
 				log.Println("reply stream was closed unexpectedly")
+
 				return
 			}
+
 			r.processRequest(request)
 		}
 	}
@@ -91,6 +94,7 @@ func (r *Replier) Start(ctx context.Context) {
 
 func (r *Replier) processRequest(request RequestReply) {
 	log.Println("processing request", request)
+
 	go func(request RequestReply) {
 		log.Println("do something with the request")
 		request.ReplyAddress <- Reply{
