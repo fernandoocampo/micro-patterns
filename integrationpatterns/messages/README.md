@@ -69,3 +69,15 @@ There are also proposals like [OpenTelemetry](https://opentelemetry.io) that you
 ```sh
 go1.18.3 test -race -timeout 5s -count 1 -run ^TestCorrelationID$ github.com/fernandoocampo/micro-patterns/integrationpatterns/messages/correlations
 ```
+
+## Message Expiration.
+
+My application is using Messaging. If a Message’s data or request is not received by a certain time, it is useless and should be ignored.
+
+* Problem
+
+How can a sender indicate when a message should be considered stale and thus shouldn’t be processed?
+
+* Solution
+
+Set the Message Expiration to specify a time limit how long the message is viable.
