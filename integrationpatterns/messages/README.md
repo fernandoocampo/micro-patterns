@@ -81,3 +81,15 @@ How can a sender indicate when a message should be considered stale and thus sho
 * Solution
 
 Set the Message Expiration to specify a time limit how long the message is viable.
+
+## Format Indicator
+
+Several applications are communicating via Messages that follow an agreed upon data format, perhaps an enterprise-wide Canonical Data Model. However, that format may need to change over time.
+
+* Problem
+
+How can a message’s data format be designed to allow for possible future changes?
+
+* Solution
+
+Design a data format that includes a Format Indicator, so that the message specifies what format it is using.
