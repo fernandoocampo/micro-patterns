@@ -68,7 +68,9 @@ func (r Receiver) Start(ctx context.Context) {
 				if !ok {
 					return
 				}
+
 				resolution := processMessage((newMessage))
+
 				go r.doAudit(ctx, resolution)
 			}
 		}
@@ -80,8 +82,7 @@ func (r Receiver) Start(ctx context.Context) {
 func processMessage(message Message) Resolution {
 	var result Resolution
 
-	now := time.Now().Unix()
-	if now <= message.Deadline {
+	if now := time.Now().Unix(); now <= message.Deadline {
 		result.Processed = true
 	}
 

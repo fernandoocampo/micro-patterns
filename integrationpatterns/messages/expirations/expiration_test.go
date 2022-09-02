@@ -2,6 +2,7 @@ package expirations_test
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"time"
 
@@ -9,68 +10,52 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSendMessageExpirationValid(t *testing.T) {
+func TestSendMessageExpiration(t *testing.T) {
 	t.Parallel()
 
-	// Given
-	message := expirations.Message{
-		Deadline: time.Now().Unix() + 1000,
-		Value:    "value",
+	cases := map[string]struct {
+		message expirations.Message
+		want    expirations.Resolution
+	}{
+		"valid": {
+			message: expirations.Message{
+				Deadline: time.Now().Unix() + 1000,
+				Value:    "value",
+			},
+			want: expirations.Resolution{
+				Processed: true,
+			},
+		},
+		"invalid": {
+			message: expirations.Message{
+				Deadline: time.Now().Unix() - 1000,
+				Value:    "value",
+			},
+			want: expirations.Resolution{
+				Processed: false,
+			},
+		},
 	}
 
-	expectedMessage := expirations.Resolution{
-		Processed: true,
+	for name, data := range cases {
+		name, data := name, data
+
+		t.Run(name, func(st *testing.T) {
+			st.Parallel()
+
+			newMessage, err := send(st, data.message)
+			// Then
+			assert.NoError(t, err)
+			assert.Equal(t, data.want, newMessage)
+		})
 	}
-
-	ctx := context.TODO()
-
-	ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
-	defer cancel()
-
-	messageChannel := make(chan expirations.Message)
-	sender := expirations.NewMessageSender(messageChannel)
-	receiver := expirations.NewMessageReceiver(messageChannel)
-
-	receiver.Start(ctx)
-
-	// When
-	err := sender.Send(ctx, message)
-
-	var closed bool
-
-	var newMessage expirations.Resolution
-
-	select {
-	case <-ctx.Done():
-		if ctx.Err() != nil {
-			t.Log(ctx.Err())
-		}
-	case newMessage, closed = <-receiver.Audit():
-		if !closed {
-			t.Log("receivir audit channel was closed")
-		}
-	}
-	// Then
-	assert.NoError(t, err)
-	assert.Equal(t, expectedMessage, newMessage)
 }
 
-func TestSendMessageExpirationInvalid(t *testing.T) {
-	t.Parallel()
+func send(t *testing.T, message expirations.Message) (expirations.Resolution, error) {
+	t.Helper()
 
 	// Given
-	message := expirations.Message{
-		Deadline: time.Now().Unix() - 1000,
-		Value:    "value",
-	}
-
-	expectedMessage := expirations.Resolution{
-		Processed: false,
-	}
-
-	ctx := context.TODO()
-
-	ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
+	ctx, cancel := context.WithTimeout(context.TODO(), 2*time.Second)
 	defer cancel()
 
 	messageChannel := make(chan expirations.Message)
@@ -81,6 +66,9 @@ func TestSendMessageExpirationInvalid(t *testing.T) {
 
 	// When
 	err := sender.Send(ctx, message)
+	if err != nil {
+		return expirations.Resolution{}, fmt.Errorf("failed: %w", err)
+	}
 
 	var closed bool
 
@@ -96,7 +84,6 @@ func TestSendMessageExpirationInvalid(t *testing.T) {
 			t.Log("receivir audit channel was closed")
 		}
 	}
-	// Then
-	assert.NoError(t, err)
-	assert.Equal(t, expectedMessage, newMessage)
+
+	return newMessage, nil
 }

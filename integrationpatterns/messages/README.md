@@ -1,5 +1,7 @@
 # message
 
+When two applications wish to exchange a piece of data, they do so by wrapping it in a message.
+
 ## Message
 
 * Problem
