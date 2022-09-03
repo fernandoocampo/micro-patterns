@@ -12,7 +12,7 @@ import (
 func TestProcessEvent(t *testing.T) {
 	t.Parallel()
 	// Given
-	ctx, cancel := context.WithTimeout(context.TODO(), 20*time.Second)
+	ctx, cancel := context.WithTimeout(context.TODO(), 2*time.Second)
 	defer cancel()
 
 	loggerChannel := pipes.NewPipe()
